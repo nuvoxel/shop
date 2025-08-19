@@ -1,0 +1,86 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <!-- NuVoxel Symbol - 512x512 Square Version for Favicon and Circle Mask -->
+  <!-- Background circle for better visibility when used as favicon -->
+  <circle cx="256" cy="256" r="240" fill="#f9fafb" opacity="0.5"/>
+  
+  <g transform="translate(256, 256) scale(1.6)">
+    <!-- Blue Arrow Path (top/right arrow) -->
+    <path d="M 0 -90
+             C -49.7 -90 -90 -40.3 -90 0
+             C -90 40.3 -40.3 90 0 90
+             C 20 90 38.5 84.6 54.3 75.3
+             L 39.5 57.5
+             C 28.1 64 14.6 67.5 0 67.5
+             C -37.3 67.5 -67.5 37.3 -67.5 0
+             C -67.5 -37.3 -37.3 -67.5 0 -67.5
+             C 18.5 -67.5 35 -59.6 46.4 -46.4
+             L 22.5 -45
+             L 67.5 -67.5
+             L 45 -112.5
+             L 31.8 -80.7
+             C 19.1 -86.9 9.9 -90 0 -90 Z" 
+          fill="#3a81c3" 
+          stroke="#3a81c3" 
+          stroke-width="2"
+          stroke-linejoin="round"/>
+    
+    <!-- Green Arrow Path (bottom/left arrow) -->
+    <path d="M 0 90
+             C 49.7 90 90 40.3 90 0
+             C 90 -40.3 40.3 -90 0 -90
+             C -20 -90 -38.5 -84.6 -54.3 -75.3
+             L -39.5 -57.5
+             C -28.1 -64 -14.6 -67.5 0 -67.5
+             C 37.3 -67.5 67.5 -37.3 67.5 0
+             C 67.5 37.3 37.3 67.5 0 67.5
+             C -18.5 67.5 -35 59.6 -46.4 46.4
+             L -22.5 45
+             L -67.5 67.5
+             L -45 112.5
+             L -31.8 80.7
+             C -19.1 86.9 -9.9 90 0 90 Z" 
+          fill="#a0ce67" 
+          stroke="#a0ce67" 
+          stroke-width="2"
+          stroke-linejoin="round"/>
+          
+    <!-- Add subtle inner highlights for depth -->
+    <path d="M 0 -75
+             C -41.4 -75 -75 -33.6 -75 0
+             C -75 33.6 -33.6 75 0 75
+             C 16.7 75 32.1 70.5 45.3 62.8
+             L 35 50
+             C 25.1 55 13.6 57.5 0 57.5
+             C -31.1 57.5 -57.5 31.1 -57.5 0
+             C -57.5 -31.1 -31.1 -57.5 0 -57.5
+             C 15.4 -57.5 29.2 -50.8 38.7 -38.7
+             L 20 -37.5
+             L 57.5 -57.5
+             L 37.5 -95
+             L 27 -68.5
+             C 17 -73.5 8.3 -75 0 -75 Z" 
+          fill="#4a91d3" 
+          opacity="0.3"/>
+    
+    <path d="M 0 75
+             C 41.4 75 75 33.6 75 0
+             C 75 -33.6 33.6 -75 0 -75
+             C -16.7 -75 -32.1 -70.5 -45.3 -62.8
+             L -35 -50
+             C -25.1 -55 -13.6 -57.5 0 -57.5
+             C 31.1 -57.5 57.5 -31.1 57.5 0
+             C 57.5 31.1 31.1 57.5 0 57.5
+             C -15.4 57.5 -29.2 50.8 -38.7 38.7
+             L -20 37.5
+             L -57.5 57.5
+             L -37.5 95
+             L -27 68.5
+             C -17 73.5 -8.3 75 0 75 Z" 
+          fill="#b0de77" 
+          opacity="0.3"/>
+  </g>
+  
+  <!-- Optional: Circle mask preview (commented out, but shows how it would look) -->
+  <!-- <circle cx="256" cy="256" r="255" fill="none" stroke="#e5e7eb" stroke-width="2" opacity="0.3"/> -->
+</svg>

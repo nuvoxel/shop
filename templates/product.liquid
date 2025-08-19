@@ -1,0 +1,315 @@
+{% comment %}
+  Product Page Template
+{% endcomment %}
+
+<div class="nuvoxel-product-page">
+  <div class="page-width">
+    <!-- Breadcrumbs -->
+    <nav class="nuvoxel-breadcrumbs" aria-label="Breadcrumb">
+      <a href="{{ routes.root_url }}">Home</a>
+      <span>/</span>
+      {% if collection %}
+        <a href="{{ collection.url }}">{{ collection.title }}</a>
+        <span>/</span>
+      {% endif %}
+      <span>{{ product.title }}</span>
+    </nav>
+
+    <div class="nuvoxel-product-container">
+      <!-- Product Images -->
+      <div class="nuvoxel-product-images">
+        {% if product.featured_image %}
+          <div class="nuvoxel-main-image">
+            <img src="{{ product.featured_image | image_url: width: 600 }}" 
+                 alt="{{ product.featured_image.alt | escape }}"
+                 loading="lazy">
+          </div>
+        {% endif %}
+        
+        {% if product.images.size > 1 %}
+          <div class="nuvoxel-image-thumbnails">
+            {% for image in product.images %}
+              <button class="nuvoxel-thumbnail" data-image-url="{{ image | image_url: width: 600 }}">
+                <img src="{{ image | image_url: width: 100 }}" 
+                     alt="{{ image.alt | escape }}"
+                     loading="lazy">
+              </button>
+            {% endfor %}
+          </div>
+        {% endif %}
+      </div>
+
+      <!-- Product Info -->
+      <div class="nuvoxel-product-info">
+        <h1 class="nuvoxel-product-title">{{ product.title }}</h1>
+        
+        <div class="nuvoxel-product-price">
+          {% if product.compare_at_price > product.price %}
+            <span class="nuvoxel-price-compare">{{ product.compare_at_price | money }}</span>
+          {% endif %}
+          <span class="nuvoxel-price-current">{{ product.price | money }}</span>
+          {% if product.compare_at_price > product.price %}
+            <span class="nuvoxel-price-save">Save {{ product.compare_at_price | minus: product.price | money }}</span>
+          {% endif %}
+        </div>
+
+        <div class="nuvoxel-product-description">
+          {{ product.description }}
+        </div>
+
+        <!-- Product Form -->
+        <form action="{{ routes.cart_add_url }}" method="post" enctype="multipart/form-data" class="nuvoxel-product-form">
+          {% if product.has_only_default_variant == false %}
+            <div class="nuvoxel-product-options">
+              {% for option in product.options_with_values %}
+                <div class="nuvoxel-option-group">
+                  <label>{{ option.name }}</label>
+                  <select name="options[{{ option.name | escape }}]" class="nuvoxel-option-select">
+                    {% for value in option.values %}
+                      <option value="{{ value | escape }}" {% if option.selected_value == value %}selected{% endif %}>
+                        {{ value }}
+                      </option>
+                    {% endfor %}
+                  </select>
+                </div>
+              {% endfor %}
+            </div>
+          {% endif %}
+
+          <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+          
+          <div class="nuvoxel-product-quantity">
+            <label for="quantity">Quantity:</label>
+            <input type="number" id="quantity" name="quantity" value="1" min="1" class="nuvoxel-quantity-input">
+          </div>
+
+          <button type="submit" class="nuvoxel-add-to-cart" 
+                  {% unless product.available %}disabled{% endunless %}>
+            {% if product.available %}
+              Add to Cart
+            {% else %}
+              Sold Out
+            {% endif %}
+          </button>
+        </form>
+
+        <!-- Product Meta -->
+        <div class="nuvoxel-product-meta">
+          {% if product.vendor %}
+            <p><strong>Vendor:</strong> {{ product.vendor }}</p>
+          {% endif %}
+          {% if product.type %}
+            <p><strong>Type:</strong> {{ product.type }}</p>
+          {% endif %}
+          {% if product.tags.size > 0 %}
+            <p><strong>Tags:</strong> {{ product.tags | join: ', ' }}</p>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<style>
+  .nuvoxel-product-page {
+    padding: 40px 0;
+  }
+
+  .nuvoxel-breadcrumbs {
+    margin-bottom: 20px;
+    font-size: 14px;
+    color: #6b7280;
+  }
+
+  .nuvoxel-breadcrumbs a {
+    color: #10b981;
+    text-decoration: none;
+  }
+
+  .nuvoxel-breadcrumbs a:hover {
+    text-decoration: none;
+    color: #059669;
+  }
+
+  .nuvoxel-breadcrumbs span {
+    margin: 0 8px;
+  }
+
+  .nuvoxel-product-container {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 60px;
+  }
+
+  .nuvoxel-product-images {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+  }
+
+  .nuvoxel-main-image img {
+    width: 100%;
+    height: auto;
+    border-radius: 8px;
+  }
+
+  .nuvoxel-image-thumbnails {
+    display: flex;
+    gap: 10px;
+    overflow-x: auto;
+  }
+
+  .nuvoxel-thumbnail {
+    border: 2px solid transparent;
+    border-radius: 4px;
+    cursor: pointer;
+    background: none;
+    padding: 0;
+  }
+
+  .nuvoxel-thumbnail:hover {
+    border-color: #059669;
+  }
+
+  .nuvoxel-thumbnail img {
+    width: 80px;
+    height: 80px;
+    object-fit: cover;
+    border-radius: 4px;
+  }
+
+  .nuvoxel-product-title {
+    font-size: 32px;
+    font-weight: 700;
+    margin-bottom: 20px;
+    color: #163172;
+  }
+
+  .nuvoxel-product-price {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+    font-size: 24px;
+  }
+
+  .nuvoxel-price-current {
+    font-weight: 600;
+    color: #059669;
+  }
+
+  .nuvoxel-price-compare {
+    text-decoration: line-through;
+    color: #6b7280;
+    font-size: 20px;
+  }
+
+  .nuvoxel-price-save {
+    background: #059669;
+    color: white;
+    padding: 4px 8px;
+    border-radius: 4px;
+    font-size: 14px;
+    font-weight: 600;
+  }
+
+  .nuvoxel-product-description {
+    margin-bottom: 32px;
+    line-height: 1.6;
+    color: #4b5563;
+  }
+
+  .nuvoxel-product-options {
+    margin-bottom: 24px;
+  }
+
+  .nuvoxel-option-group {
+    margin-bottom: 16px;
+  }
+
+  .nuvoxel-option-group label {
+    display: block;
+    margin-bottom: 8px;
+    font-weight: 600;
+    color: #111827;
+  }
+
+  .nuvoxel-option-select {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 16px;
+    font-family: 'Amiko', sans-serif;
+  }
+
+  .nuvoxel-product-quantity {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 24px;
+  }
+
+  .nuvoxel-quantity-input {
+    width: 80px;
+    padding: 10px;
+    border: 1px solid #d1d5db;
+    border-radius: 6px;
+    font-size: 16px;
+    text-align: center;
+  }
+
+  .nuvoxel-add-to-cart {
+    width: 100%;
+    padding: 16px;
+    background: #059669;
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s;
+  }
+
+  .nuvoxel-add-to-cart:hover:not(:disabled) {
+    background: #047857;
+  }
+
+  .nuvoxel-add-to-cart:disabled {
+    background: #9ca3af;
+    cursor: not-allowed;
+  }
+
+  .nuvoxel-product-meta {
+    margin-top: 32px;
+    padding-top: 32px;
+    border-top: 1px solid #e5e7eb;
+  }
+
+  .nuvoxel-product-meta p {
+    margin-bottom: 8px;
+    color: #6b7280;
+  }
+
+  .nuvoxel-product-meta strong {
+    color: #111827;
+  }
+
+  @media (max-width: 768px) {
+    .nuvoxel-product-container {
+      grid-template-columns: 1fr;
+      gap: 40px;
+    }
+  }
+</style>
+
+<script>
+  // Handle thumbnail clicks
+  document.querySelectorAll('.nuvoxel-thumbnail').forEach(thumb => {
+    thumb.addEventListener('click', function() {
+      const imageUrl = this.dataset.imageUrl;
+      document.querySelector('.nuvoxel-main-image img').src = imageUrl;
+    });
+  });
+</script>

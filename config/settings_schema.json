@@ -1,0 +1,79 @@
+[
+  {
+    "name": "theme_info",
+    "theme_name": "NuVoxel Theme",
+    "theme_version": "1.0.0",
+    "theme_author": "NuVoxel",
+    "theme_documentation_url": "https://hydrogen.nuvoxel.com",
+    "theme_support_url": "https://hydrogen.nuvoxel.com/contact-sales"
+  },
+  {
+    "name": "Brand Colors",
+    "settings": [
+      {
+        "type": "color",
+        "id": "primary_color",
+        "label": "Primary Color",
+        "default": "#10b981"
+      },
+      {
+        "type": "color",
+        "id": "text_color",
+        "label": "Text Color",
+        "default": "#111827"
+      },
+      {
+        "type": "color",
+        "id": "background_color",
+        "label": "Background Color",
+        "default": "#ffffff"
+      }
+    ]
+  },
+  {
+    "name": "Header",
+    "settings": [
+      {
+        "type": "text",
+        "id": "main_site_url",
+        "label": "Main Site URL",
+        "default": "https://www.nuvoxel.com"
+      },
+      {
+        "type": "checkbox",
+        "id": "show_cart_count",
+        "label": "Show Cart Count",
+        "default": true
+      }
+    ]
+  },
+  {
+    "name": "Footer",
+    "settings": [
+      {
+        "type": "text",
+        "id": "footer_description",
+        "label": "Footer Description",
+        "default": "Building enterprise solutions for modern cloud challenges."
+      },
+      {
+        "type": "text",
+        "id": "linkedin_url",
+        "label": "LinkedIn URL",
+        "default": "https://www.linkedin.com/company/nuvoxel/"
+      },
+      {
+        "type": "text",
+        "id": "youtube_url",
+        "label": "YouTube URL",
+        "default": "https://www.youtube.com/@cryingcloud1"
+      },
+      {
+        "type": "text",
+        "id": "blog_url",
+        "label": "Blog URL",
+        "default": "https://www.azurefieldnotes.com"
+      }
+    ]
+  }
+]

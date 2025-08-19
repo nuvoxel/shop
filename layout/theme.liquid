@@ -1,0 +1,170 @@
+<!doctype html>
+<html class="no-js" lang="{{ request.locale.iso_code }}">
+  <head>
+    <meta charset="utf-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="theme-color" content="">
+    <link rel="canonical" href="{{ canonical_url }}">
+
+    {%- if settings.favicon != blank -%}
+      <link rel="icon" type="image/png" href="{{ settings.favicon | image_url: width: 32, height: 32 }}">
+    {%- endif -%}
+
+    <title>
+      {{ page_title }}
+      {%- if current_tags %} &ndash; tagged "{{ current_tags | join: ', ' }}"{% endif -%}
+      {%- if current_page != 1 %} &ndash; Page {{ current_page }}{% endif -%}
+      {%- unless page_title contains shop.name %} &ndash; {{ shop.name }}{% endunless -%}
+    </title>
+
+    {% if page_description %}
+      <meta name="description" content="{{ page_description | escape }}">
+    {% endif %}
+
+    <!-- SEO Meta Tags -->
+    <meta property="og:site_name" content="{{ shop.name }}">
+    <meta property="og:url" content="{{ canonical_url }}">
+    <meta property="og:title" content="{{ page_title | escape }}">
+    <meta property="og:type" content="website">
+    <meta property="og:description" content="{{ page_description | escape }}">
+    
+    {% if product %}
+      <meta property="og:type" content="product">
+      <meta property="og:price:amount" content="{{ product.price | money_without_currency | strip_html }}">
+      <meta property="og:price:currency" content="{{ shop.currency }}">
+      {% if product.featured_image %}
+        <meta property="og:image" content="http:{{ product.featured_image | image_url: width: 1200 }}">
+        <meta property="og:image:secure_url" content="https:{{ product.featured_image | image_url: width: 1200 }}">
+        <meta property="og:image:width" content="1200">
+        <meta property="og:image:height" content="1200">
+      {% endif %}
+      
+      <!-- Product structured data -->
+      <script type="application/ld+json">
+        {
+          "@context": "https://schema.org",
+          "@type": "Product",
+          "name": {{ product.title | json }},
+          "description": {{ product.description | strip_html | json }},
+          "image": "https:{{ product.featured_image | image_url: width: 1200 }}",
+          "url": {{ canonical_url | json }},
+          "sku": {{ product.selected_or_first_available_variant.sku | json }},
+          "brand": {
+            "@type": "Brand",
+            "name": {{ product.vendor | json }}
+          },
+          "offers": {
+            "@type": "Offer",
+            "url": {{ canonical_url | json }},
+            "priceCurrency": {{ shop.currency | json }},
+            "price": {{ product.price | money_without_currency | strip_html }},
+            "availability": "{% if product.available %}https://schema.org/InStock{% else %}https://schema.org/OutOfStock{% endif %}"
+          }
+        }
+      </script>
+    {% elsif collection %}
+      {% if collection.image %}
+        <meta property="og:image" content="http:{{ collection.image | image_url: width: 1200 }}">
+        <meta property="og:image:secure_url" content="https:{{ collection.image | image_url: width: 1200 }}">
+      {% endif %}
+    {% endif %}
+    
+    <!-- Twitter Card -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="{{ page_title | escape }}">
+    <meta name="twitter:description" content="{{ page_description | escape }}">
+
+    <!-- Amiko Font -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Amiko:wght@400;600;700&display=swap" rel="stylesheet">
+
+    {{ content_for_header }}
+
+    <!-- Base Styles -->
+    <style>
+      * {
+        margin: 0;
+        padding: 0;
+        box-sizing: border-box;
+      }
+
+      body {
+        font-family: 'Amiko', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+        line-height: 1.5;
+        color: #111827;
+        background: #ffffff;
+      }
+      
+      a {
+        text-decoration: none;
+      }
+
+      .shopify-section {
+        display: block;
+      }
+
+      .page-width {
+        max-width: 1280px;
+        margin: 0 auto;
+        padding: 0 24px;
+      }
+
+      main {
+        min-height: calc(100vh - 400px);
+      }
+      
+      /* Add padding for non-homepage content */
+      main:not(.homepage-main) {
+        padding: 40px 0;
+      }
+
+      /* Hide default Shopify header/footer */
+      .section-header,
+      .section-footer,
+      .shopify-section-header,
+      .shopify-section-footer {
+        display: none !important;
+      }
+    </style>
+
+    {{ 'base.css' | asset_url | stylesheet_tag }}
+    {{ 'section-main-product.css' | asset_url | stylesheet_tag }}
+  </head>
+
+  <body class="gradient">
+    <!-- NuVoxel Custom Header -->
+    {% render 'nuvoxel-header' %}
+
+    <main id="MainContent" class="content-for-layout focus-none" role="main" tabindex="-1">
+      {{ content_for_layout }}
+    </main>
+
+    <!-- NuVoxel Custom Footer -->
+    {% render 'nuvoxel-footer' %}
+
+    <script>
+      // Send cart updates to parent frame if embedded
+      if (window.parent !== window) {
+        function sendCartUpdate() {
+          fetch('/cart.js')
+            .then(response => response.json())
+            .then(cart => {
+              window.parent.postMessage({
+                type: 'cart-update',
+                count: cart.item_count,
+                total: cart.total_price
+              }, 'https://hydrogen.nuvoxel.com');
+            });
+        }
+
+        // Send updates on cart changes
+        document.addEventListener('cart:change', sendCartUpdate);
+        
+        // Send initial cart state
+        sendCartUpdate();
+      }
+    </script>
+  </body>
+</html>

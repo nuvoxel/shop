@@ -1,0 +1,235 @@
+{% comment %}
+  NuVoxel Custom Footer - Matches the main app footer
+{% endcomment %}
+
+<footer class="nuvoxel-footer">
+  <div class="nuvoxel-footer-container">
+    <div class="nuvoxel-footer-grid">
+      <!-- Company Info -->
+      <div class="nuvoxel-footer-section">
+        <a href="https://www.nuvoxel.com/" class="nuvoxel-footer-logo">
+          <img src="{{ 'nuvoxel-logo.svg' | asset_url }}" alt="NuVoxel" height="32" />
+        </a>
+        <p class="nuvoxel-footer-description">
+          Building enterprise solutions for modern cloud challenges.
+        </p>
+      </div>
+
+      <!-- Company Links -->
+      <div class="nuvoxel-footer-section">
+        <h4 class="nuvoxel-footer-heading">Company</h4>
+        <ul class="nuvoxel-footer-list">
+          <li><a href="https://www.nuvoxel.com/hydrogen" class="nuvoxel-footer-link">Hydrogen Platform</a></li>
+          <li><a href="https://www.nuvoxel.com/resale" class="nuvoxel-footer-link">Resale</a></li>
+          <li><a href="{{ shop.url }}" class="nuvoxel-footer-link">Shop</a></li>
+          <li><a href="https://www.nuvoxel.com/contact-sales" class="nuvoxel-footer-link">Contact</a></li>
+        </ul>
+      </div>
+
+      <!-- Legal Links -->
+      <div class="nuvoxel-footer-legal-section">
+        <h4 class="nuvoxel-footer-heading">Legal</h4>
+        <div class="nuvoxel-footer-legal-columns">
+          <!-- First column -->
+          <ul class="nuvoxel-footer-list">
+            <li><a href="https://www.nuvoxel.com/terms" class="nuvoxel-footer-link">Terms</a></li>
+            <li><a href="https://www.nuvoxel.com/privacy" class="nuvoxel-footer-link">Privacy</a></li>
+            <li><a href="https://www.nuvoxel.com/cookies" class="nuvoxel-footer-link">Cookies</a></li>
+          </ul>
+          <!-- Second column -->
+          <ul class="nuvoxel-footer-list">
+            <li><a href="https://www.nuvoxel.com/dpa" class="nuvoxel-footer-link">Data Processing Agreement</a></li>
+            <li><a href="https://www.nuvoxel.com/do-not-sell" class="nuvoxel-footer-link">Do Not Sell/Share My Info</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Social Links -->
+      <div class="nuvoxel-footer-section">
+        <h4 class="nuvoxel-footer-heading">Connect</h4>
+        <div class="nuvoxel-footer-social">
+          <a href="https://www.azurefieldnotes.com" class="nuvoxel-footer-social-link" aria-label="Blog">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+              <path d="M4 19.5A2.5 2.5 0 0 1 6.5 17H20"></path>
+              <path d="M6.5 2H20v20H6.5A2.5 2.5 0 0 1 4 19.5v-15A2.5 2.5 0 0 1 6.5 2z"></path>
+            </svg>
+          </a>
+          <a href="https://www.linkedin.com/company/nuvoxel/" class="nuvoxel-footer-social-link" aria-label="LinkedIn">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M19 0h-14c-2.761 0-5 2.239-5 5v14c0 2.761 2.239 5 5 5h14c2.762 0 5-2.239 5-5v-14c0-2.761-2.238-5-5-5zm-11 19h-3v-11h3v11zm-1.5-12.268c-.966 0-1.75-.79-1.75-1.764s.784-1.764 1.75-1.764 1.75.79 1.75 1.764-.783 1.764-1.75 1.764zm13.5 12.268h-3v-5.604c0-3.368-4-3.113-4 0v5.604h-3v-11h3v1.765c1.396-2.586 7-2.777 7 2.476v6.759z"/>
+            </svg>
+          </a>
+          <a href="https://www.youtube.com/@cryingcloud1" class="nuvoxel-footer-social-link" aria-label="YouTube">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor">
+              <path d="M19.615 3.184c-3.604-.246-11.631-.245-15.23 0-3.897.266-4.356 2.62-4.385 8.816.029 6.185.484 8.549 4.385 8.816 3.6.245 11.626.246 15.23 0 3.897-.266 4.356-2.62 4.385-8.816-.029-6.185-.484-8.549-4.385-8.816zm-10.615 12.816v-8l8 3.993-8 4.007z"/>
+            </svg>
+          </a>
+        </div>
+      </div>
+    </div>
+    
+    <!-- Copyright -->
+    <div class="nuvoxel-footer-bottom">
+      <p class="nuvoxel-footer-copyright">
+        Built with ❤️ in Silicon Valley • Copyright © {{ 'now' | date: '%Y' }} NuVoxel LLC. All rights reserved.
+      </p>
+    </div>
+  </div>
+</footer>
+
+<style>
+  .nuvoxel-footer {
+    margin-top: auto;
+    border-top: 1px solid #e5e7eb;
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(8px);
+    padding: 48px 24px;
+  }
+
+  .nuvoxel-footer-container {
+    max-width: 1280px;
+    margin: 0 auto;
+  }
+
+  .nuvoxel-footer-grid {
+    display: grid;
+    grid-template-columns: 1fr;
+    gap: 32px;
+    margin-bottom: 48px;
+  }
+  
+  @media (min-width: 1024px) {
+    .nuvoxel-footer-grid {
+      grid-template-columns: 1fr auto auto 1fr;
+      gap: 48px;
+      align-items: start;
+    }
+    
+    .nuvoxel-footer-grid > :first-child {
+      justify-self: start;
+    }
+    
+    .nuvoxel-footer-grid > :last-child {
+      justify-self: end;
+    }
+  }
+
+  .nuvoxel-footer-section {
+    display: flex;
+    flex-direction: column;
+  }
+  
+  .nuvoxel-footer-legal-section {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .nuvoxel-footer-logo {
+    display: inline-flex;
+    text-decoration: none;
+    margin-bottom: 16px;
+  }
+
+  .nuvoxel-footer-logo img {
+    height: 32px;
+    width: auto;
+  }
+
+  .nuvoxel-footer-description {
+    font-size: 14px;
+    color: #6b7280;
+    line-height: 1.5;
+    margin: 0;
+  }
+
+  .nuvoxel-footer-heading {
+    font-size: 14px;
+    font-weight: 600;
+    margin-bottom: 12px;
+    color: #163172;
+    font-family: 'Amiko', -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+
+  .nuvoxel-footer-list {
+    list-style: none;
+    padding: 0;
+    margin: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+  }
+
+  .nuvoxel-footer-legal-columns {
+    display: flex;
+    gap: 24px;
+  }
+  
+  .nuvoxel-footer-legal-columns .nuvoxel-footer-list {
+    white-space: nowrap;
+  }
+  
+  .nuvoxel-footer-legal-columns .nuvoxel-footer-list:last-child {
+    margin-left: 8px;
+  }
+
+  .nuvoxel-footer-link {
+    font-size: 14px;
+    color: #6b7280;
+    text-decoration: none;
+    transition: color 0.2s;
+    font-family: 'Amiko', -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+
+  .nuvoxel-footer-link:hover {
+    color: #163172;
+  }
+
+  .nuvoxel-footer-social {
+    display: flex;
+    gap: 16px;
+  }
+
+  .nuvoxel-footer-social-link {
+    color: #6b7280;
+    transition: color 0.2s;
+  }
+
+  .nuvoxel-footer-social-link:hover {
+    color: #163172;
+  }
+
+  .nuvoxel-footer-bottom {
+    padding-top: 32px;
+    border-top: 1px solid #e5e7eb;
+    text-align: center;
+  }
+
+  .nuvoxel-footer-copyright {
+    font-size: 12px;
+    color: #6b7280;
+    margin: 0;
+    font-family: 'Amiko', -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+
+  @media (max-width: 768px) {
+    .nuvoxel-footer-grid {
+      grid-template-columns: 1fr;
+      gap: 32px;
+      text-align: center;
+    }
+
+    .nuvoxel-footer-section,
+    .nuvoxel-footer-legal-section {
+      align-items: center;
+    }
+
+    .nuvoxel-footer-legal-columns {
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .nuvoxel-footer-social {
+      justify-content: center;
+    }
+  }
+</style>

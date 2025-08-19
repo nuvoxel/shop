@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<svg width="512" height="512" viewBox="0 0 512 512" xmlns="http://www.w3.org/2000/svg">
+  <!-- NuVoxel Symbol - Clean 512x512 for Brand/Favicon -->
+  <!-- White background for clean appearance -->
+  <rect width="512" height="512" fill="white"/>
+  
+  <!-- Centered symbol scaled appropriately -->
+  <g transform="translate(256, 256) scale(2.2)">
+    <!-- Blue Arrow (clockwise) -->
+    <path d="M 0 -70
+             C -38.66 -70 -70 -31.34 -70 0
+             C -70 31.34 -31.34 70 0 70
+             C 15.5 70 30 66 42.2 58.6
+             L 30.7 44.7
+             C 21.9 49.8 11.4 52.5 0 52.5
+             C -29 52.5 -52.5 29 -52.5 0
+             C -52.5 -29 -29 -52.5 0 -52.5
+             C 14.4 -52.5 27.2 -46.3 36.1 -36.1
+             L 17.5 -35
+             L 52.5 -52.5
+             L 35 -87.5
+             L 24.8 -62.7
+             C 14.9 -67.6 7.7 -70 0 -70 Z" 
+          fill="#3a81c3"/>
+    
+    <!-- Green Arrow (counter-clockwise) -->
+    <path d="M 0 70
+             C 38.66 70 70 31.34 70 0
+             C 70 -31.34 31.34 -70 0 -70
+             C -15.5 -70 -30 -66 -42.2 -58.6
+             L -30.7 -44.7
+             C -21.9 -49.8 -11.4 -52.5 0 -52.5
+             C 29 -52.5 52.5 -29 52.5 0
+             C 52.5 29 29 52.5 0 52.5
+             C -14.4 52.5 -27.2 46.3 -36.1 36.1
+             L -17.5 35
+             L -52.5 52.5
+             L -35 87.5
+             L -24.8 62.7
+             C -14.9 67.6 -7.7 70 0 70 Z" 
+          fill="#a0ce67"/>
+  </g>
+</svg>
