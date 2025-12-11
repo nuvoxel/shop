@@ -88,14 +88,73 @@
                   <img src="{{ collection.image | image_url: width: 600 }}"
                        alt="{{ collection.title }}"
                        loading="lazy">
+                {% elsif collection.products.first.featured_image %}
+                  <img src="{{ collection.products.first.featured_image | image_url: width: 600 }}"
+                       alt="{{ collection.title }}"
+                       loading="lazy">
                 {% else %}
                   <div class="nuvoxel-featured-placeholder">
-                    <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
-                      <line x1="16.5" y1="9.4" x2="7.5" y2="4.21"></line>
-                      <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
-                      <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
-                      <line x1="12" y1="22.08" x2="12" y2="12"></line>
-                    </svg>
+                    {% case collection.handle %}
+                      {% when 'memory' %}
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                          <rect x="4" y="4" width="16" height="16" rx="2"></rect>
+                          <rect x="9" y="9" width="6" height="6"></rect>
+                          <line x1="9" y1="1" x2="9" y2="4"></line>
+                          <line x1="15" y1="1" x2="15" y2="4"></line>
+                          <line x1="9" y1="20" x2="9" y2="23"></line>
+                          <line x1="15" y1="20" x2="15" y2="23"></line>
+                          <line x1="20" y1="9" x2="23" y2="9"></line>
+                          <line x1="20" y1="14" x2="23" y2="14"></line>
+                          <line x1="1" y1="9" x2="4" y2="9"></line>
+                          <line x1="1" y1="14" x2="4" y2="14"></line>
+                        </svg>
+                      {% when 'networking' %}
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                          <rect x="9" y="2" width="6" height="6" rx="1"></rect>
+                          <rect x="2" y="16" width="6" height="6" rx="1"></rect>
+                          <rect x="16" y="16" width="6" height="6" rx="1"></rect>
+                          <path d="M12 8v4"></path>
+                          <path d="M5 16v-2a2 2 0 0 1 2-2h10a2 2 0 0 1 2 2v2"></path>
+                        </svg>
+                      {% when 'processors' %}
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                          <rect x="4" y="4" width="16" height="16" rx="2"></rect>
+                          <rect x="9" y="9" width="6" height="6"></rect>
+                          <path d="M15 2v2"></path>
+                          <path d="M15 20v2"></path>
+                          <path d="M2 15h2"></path>
+                          <path d="M2 9h2"></path>
+                          <path d="M20 15h2"></path>
+                          <path d="M20 9h2"></path>
+                          <path d="M9 2v2"></path>
+                          <path d="M9 20v2"></path>
+                        </svg>
+                      {% when 'storage' %}
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                          <ellipse cx="12" cy="5" rx="9" ry="3"></ellipse>
+                          <path d="M21 12c0 1.66-4 3-9 3s-9-1.34-9-3"></path>
+                          <path d="M3 5v14c0 1.66 4 3 9 3s9-1.34 9-3V5"></path>
+                        </svg>
+                      {% when 'servers' %}
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                          <rect x="2" y="2" width="20" height="8" rx="2" ry="2"></rect>
+                          <rect x="2" y="14" width="20" height="8" rx="2" ry="2"></rect>
+                          <line x1="6" y1="6" x2="6.01" y2="6"></line>
+                          <line x1="6" y1="18" x2="6.01" y2="18"></line>
+                        </svg>
+                      {% when 'merch' %}
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                          <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
+                          <line x1="7" y1="7" x2="7.01" y2="7"></line>
+                        </svg>
+                      {% else %}
+                        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                          <line x1="16.5" y1="9.4" x2="7.5" y2="4.21"></line>
+                          <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"></path>
+                          <polyline points="3.27 6.96 12 12.01 20.73 6.96"></polyline>
+                          <line x1="12" y1="22.08" x2="12" y2="12"></line>
+                        </svg>
+                    {% endcase %}
                   </div>
                 {% endif %}
                 <div class="nuvoxel-featured-overlay"></div>
@@ -408,7 +467,8 @@
   .nuvoxel-hero-visual {
     display: none;
     position: relative;
-    height: 400px;
+    height: 360px;
+    width: 100%;
   }
 
   @media (min-width: 1024px) {
@@ -424,16 +484,18 @@
     align-items: center;
     justify-content: center;
     gap: 12px;
-    padding: 32px;
+    padding: 24px 32px;
     background: white;
     border-radius: 16px;
     box-shadow: 0 20px 40px rgba(22, 49, 114, 0.1);
     border: 1px solid var(--color-border);
-    transition: transform 0.3s ease;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+    min-width: 130px;
   }
 
   .nuvoxel-hero-card:hover {
     transform: translateY(-4px);
+    box-shadow: 0 24px 48px rgba(22, 49, 114, 0.15);
   }
 
   .nuvoxel-hero-card svg {
@@ -447,31 +509,41 @@
   }
 
   .nuvoxel-hero-card-1 {
-    top: 20px;
-    left: 10%;
-    animation: float 6s ease-in-out infinite;
+    top: 0;
+    left: 50%;
+    transform: translateX(-50%);
+    animation: float1 6s ease-in-out infinite;
   }
 
   .nuvoxel-hero-card-2 {
-    top: 50%;
-    right: 5%;
-    transform: translateY(-50%);
-    animation: float 6s ease-in-out infinite 1s;
+    bottom: 40px;
+    left: 10%;
+    animation: float2 6s ease-in-out infinite;
   }
 
   .nuvoxel-hero-card-3 {
-    bottom: 20px;
-    left: 25%;
-    animation: float 6s ease-in-out infinite 2s;
+    bottom: 40px;
+    right: 10%;
+    animation: float3 6s ease-in-out infinite;
   }
 
-  @keyframes float {
+  @keyframes float1 {
+    0%, 100% { transform: translateX(-50%) translateY(0); }
+    50% { transform: translateX(-50%) translateY(-12px); }
+  }
+
+  @keyframes float2 {
     0%, 100% { transform: translateY(0); }
     50% { transform: translateY(-10px); }
   }
 
-  .nuvoxel-hero-card-2:hover {
-    transform: translateY(calc(-50% - 4px));
+  @keyframes float3 {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-8px); }
+  }
+
+  .nuvoxel-hero-card-1:hover {
+    transform: translateX(-50%) translateY(-4px);
   }
 
   /* Section Headers */
@@ -548,8 +620,14 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    background: linear-gradient(135deg, #EFF6FF, #F8FAFC);
-    color: var(--color-secondary);
+    background: linear-gradient(135deg, var(--color-primary) 0%, #1e40af 100%);
+    color: rgba(255, 255, 255, 0.5);
+  }
+
+  .nuvoxel-featured-placeholder svg {
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
   }
 
   .nuvoxel-featured-overlay {
