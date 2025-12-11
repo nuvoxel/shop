@@ -72,12 +72,71 @@
             {% if product.compare_at_price > product.price %}
               <span class="nuvoxel-price-compare">{{ product.compare_at_price | money }}</span>
             {% endif %}
-            <span class="nuvoxel-price-current">{{ product.price | money }}</span>
+            <span class="nuvoxel-price-current" id="productPrice">{{ product.price | money }}</span>
           </div>
           {% if product.compare_at_price > product.price %}
             <span class="nuvoxel-price-save">
               Save {{ product.compare_at_price | minus: product.price | money }}
             </span>
+          {% endif %}
+        </div>
+
+        <!-- Inventory Status -->
+        <div class="nuvoxel-inventory-status" id="inventoryStatus">
+          {% assign current_variant = product.selected_or_first_available_variant %}
+          {% if current_variant.inventory_management %}
+            {% if current_variant.inventory_quantity > 10 %}
+              <div class="nuvoxel-stock nuvoxel-stock-high">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                  <polyline points="22 4 12 14.01 9 11.01"></polyline>
+                </svg>
+                <span><strong>{{ current_variant.inventory_quantity }}</strong> in stock</span>
+              </div>
+            {% elsif current_variant.inventory_quantity > 0 %}
+              <div class="nuvoxel-stock nuvoxel-stock-low">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="12" y1="8" x2="12" y2="12"></line>
+                  <line x1="12" y1="16" x2="12.01" y2="16"></line>
+                </svg>
+                <span>Only <strong>{{ current_variant.inventory_quantity }}</strong> left - order soon!</span>
+              </div>
+            {% elsif current_variant.inventory_policy == 'continue' %}
+              <div class="nuvoxel-stock nuvoxel-stock-backorder">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <polyline points="12 6 12 12 16 14"></polyline>
+                </svg>
+                <span>Available on backorder</span>
+              </div>
+            {% else %}
+              <div class="nuvoxel-stock nuvoxel-stock-out">
+                <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <circle cx="12" cy="12" r="10"></circle>
+                  <line x1="15" y1="9" x2="9" y2="15"></line>
+                  <line x1="9" y1="9" x2="15" y2="15"></line>
+                </svg>
+                <span>Out of stock</span>
+              </div>
+            {% endif %}
+          {% elsif current_variant.available %}
+            <div class="nuvoxel-stock nuvoxel-stock-high">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path>
+                <polyline points="22 4 12 14.01 9 11.01"></polyline>
+              </svg>
+              <span>In stock</span>
+            </div>
+          {% else %}
+            <div class="nuvoxel-stock nuvoxel-stock-out">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <circle cx="12" cy="12" r="10"></circle>
+                <line x1="15" y1="9" x2="9" y2="15"></line>
+                <line x1="9" y1="9" x2="15" y2="15"></line>
+              </svg>
+              <span>Out of stock</span>
+            </div>
           {% endif %}
         </div>
 
@@ -388,6 +447,65 @@
     font-weight: 600;
   }
 
+  /* Inventory Status */
+  .nuvoxel-inventory-status {
+    margin-bottom: 24px;
+  }
+
+  .nuvoxel-stock {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-family: 'Amiko', sans-serif;
+  }
+
+  .nuvoxel-stock svg {
+    flex-shrink: 0;
+  }
+
+  .nuvoxel-stock strong {
+    font-weight: 700;
+  }
+
+  .nuvoxel-stock-high {
+    background: rgba(34, 197, 94, 0.1);
+    color: #16a34a;
+  }
+
+  .nuvoxel-stock-high svg {
+    color: #16a34a;
+  }
+
+  .nuvoxel-stock-low {
+    background: rgba(249, 115, 22, 0.1);
+    color: #ea580c;
+  }
+
+  .nuvoxel-stock-low svg {
+    color: #ea580c;
+  }
+
+  .nuvoxel-stock-backorder {
+    background: rgba(59, 130, 246, 0.1);
+    color: #2563eb;
+  }
+
+  .nuvoxel-stock-backorder svg {
+    color: #2563eb;
+  }
+
+  .nuvoxel-stock-out {
+    background: rgba(239, 68, 68, 0.1);
+    color: #dc2626;
+  }
+
+  .nuvoxel-stock-out svg {
+    color: #dc2626;
+  }
+
   .nuvoxel-product-description {
     font-size: 16px;
     color: var(--color-muted);
@@ -583,6 +701,23 @@
 </style>
 
 <script>
+  // Product variants data for dynamic updates
+  const productVariants = [
+    {% for variant in product.variants %}
+    {
+      id: {{ variant.id }},
+      title: "{{ variant.title | escape }}",
+      price: {{ variant.price }},
+      priceFormatted: "{{ variant.price | money }}",
+      available: {{ variant.available }},
+      inventoryManagement: {{ variant.inventory_management | json }},
+      inventoryQuantity: {{ variant.inventory_quantity | default: 0 }},
+      inventoryPolicy: "{{ variant.inventory_policy }}",
+      options: {{ variant.options | json }}
+    }{% unless forloop.last %},{% endunless %}
+    {% endfor %}
+  ];
+
   function changeImage(button, url) {
     document.getElementById('mainImageSrc').src = url;
     document.querySelectorAll('.nuvoxel-thumbnail').forEach(t => t.classList.remove('active'));
@@ -600,4 +735,82 @@
       input.value = parseInt(input.value) - 1;
     }
   }
+
+  // Find variant by selected options
+  function getSelectedVariant() {
+    const selects = document.querySelectorAll('.nuvoxel-option-select');
+    const selectedOptions = Array.from(selects).map(s => s.value);
+
+    return productVariants.find(variant => {
+      return variant.options.every((opt, idx) => opt === selectedOptions[idx]);
+    });
+  }
+
+  // Update inventory display
+  function updateInventoryDisplay(variant) {
+    const container = document.getElementById('inventoryStatus');
+    if (!container || !variant) return;
+
+    let html = '';
+    const checkIcon = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 11.08V12a10 10 0 1 1-5.93-9.14"></path><polyline points="22 4 12 14.01 9 11.01"></polyline></svg>`;
+    const warningIcon = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="12" y1="8" x2="12" y2="12"></line><line x1="12" y1="16" x2="12.01" y2="16"></line></svg>`;
+    const clockIcon = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><polyline points="12 6 12 12 16 14"></polyline></svg>`;
+    const xIcon = `<svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"></circle><line x1="15" y1="9" x2="9" y2="15"></line><line x1="9" y1="9" x2="15" y2="15"></line></svg>`;
+
+    if (variant.inventoryManagement) {
+      if (variant.inventoryQuantity > 10) {
+        html = `<div class="nuvoxel-stock nuvoxel-stock-high">${checkIcon}<span><strong>${variant.inventoryQuantity}</strong> in stock</span></div>`;
+      } else if (variant.inventoryQuantity > 0) {
+        html = `<div class="nuvoxel-stock nuvoxel-stock-low">${warningIcon}<span>Only <strong>${variant.inventoryQuantity}</strong> left - order soon!</span></div>`;
+      } else if (variant.inventoryPolicy === 'continue') {
+        html = `<div class="nuvoxel-stock nuvoxel-stock-backorder">${clockIcon}<span>Available on backorder</span></div>`;
+      } else {
+        html = `<div class="nuvoxel-stock nuvoxel-stock-out">${xIcon}<span>Out of stock</span></div>`;
+      }
+    } else if (variant.available) {
+      html = `<div class="nuvoxel-stock nuvoxel-stock-high">${checkIcon}<span>In stock</span></div>`;
+    } else {
+      html = `<div class="nuvoxel-stock nuvoxel-stock-out">${xIcon}<span>Out of stock</span></div>`;
+    }
+
+    container.innerHTML = html;
+  }
+
+  // Update price display
+  function updatePriceDisplay(variant) {
+    const priceEl = document.getElementById('productPrice');
+    if (priceEl && variant) {
+      priceEl.textContent = variant.priceFormatted;
+    }
+  }
+
+  // Update add to cart button
+  function updateAddToCartButton(variant) {
+    const btn = document.querySelector('.nuvoxel-add-to-cart');
+    const variantInput = document.querySelector('input[name="id"]');
+
+    if (btn && variant) {
+      variantInput.value = variant.id;
+
+      if (variant.available) {
+        btn.disabled = false;
+        btn.innerHTML = `<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="21" r="1"></circle><circle cx="20" cy="21" r="1"></circle><path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path></svg> Add to Cart`;
+      } else {
+        btn.disabled = true;
+        btn.innerHTML = 'Sold Out';
+      }
+    }
+  }
+
+  // Listen for option changes
+  document.querySelectorAll('.nuvoxel-option-select').forEach(select => {
+    select.addEventListener('change', function() {
+      const variant = getSelectedVariant();
+      if (variant) {
+        updateInventoryDisplay(variant);
+        updatePriceDisplay(variant);
+        updateAddToCartButton(variant);
+      }
+    });
+  });
 </script>
