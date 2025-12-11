@@ -4,7 +4,7 @@
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <meta name="theme-color" content="">
+    <meta name="theme-color" content="#163172">
     <link rel="canonical" href="{{ canonical_url }}">
 
     {%- if settings.favicon != blank -%}
@@ -28,7 +28,7 @@
     <meta property="og:title" content="{{ page_title | escape }}">
     <meta property="og:type" content="website">
     <meta property="og:description" content="{{ page_description | escape }}">
-    
+
     {% if product %}
       <meta property="og:type" content="product">
       <meta property="og:price:amount" content="{{ product.price | money_without_currency | strip_html }}">
@@ -39,7 +39,7 @@
         <meta property="og:image:width" content="1200">
         <meta property="og:image:height" content="1200">
       {% endif %}
-      
+
       <!-- Product structured data -->
       <script type="application/ld+json">
         {
@@ -69,7 +69,7 @@
         <meta property="og:image:secure_url" content="https:{{ collection.image | image_url: width: 1200 }}">
       {% endif %}
     {% endif %}
-    
+
     <!-- Twitter Card -->
     <meta name="twitter:card" content="summary_large_image">
     <meta name="twitter:title" content="{{ page_title | escape }}">
@@ -82,8 +82,42 @@
 
     {{ content_for_header }}
 
-    <!-- Base Styles -->
+    <!-- NuVoxel Theme - Corporate Brand Colors -->
     <style>
+      :root {
+        /* NuVoxel Brand Colors */
+        --nuvoxel-navy: #163172;
+        --nuvoxel-ocean: #3A81C3;
+        --nuvoxel-green: #A0CE67;
+        --nuvoxel-midnight: #0E1F4A;
+        --nuvoxel-deep-ocean: #2B5E98;
+        --nuvoxel-sky: #5A9BD4;
+        --nuvoxel-light-sky: #8FC2E9;
+        --nuvoxel-forest: #7AAF4C;
+        --nuvoxel-mint: #C5E199;
+        --nuvoxel-pale-green: #E8F4DC;
+
+        /* Semantic Colors */
+        --color-primary: #163172;
+        --color-primary-hover: #0E1F4A;
+        --color-secondary: #3A81C3;
+        --color-accent: #F97316;
+        --color-accent-hover: #EA580C;
+        --color-success: #A0CE67;
+        --color-background: #ffffff;
+        --color-foreground: #163172;
+        --color-muted: #6B7280;
+        --color-muted-foreground: #9CA3AF;
+        --color-border: #E5E7EB;
+        --color-card: #ffffff;
+        --color-card-hover: #F9FAFB;
+
+        /* Gradients */
+        --gradient-hero: linear-gradient(to bottom right, #F8FAFC, #EFF6FF, #F8FAFC);
+        --gradient-cta: linear-gradient(to right, #F97316, #EF4444);
+        --gradient-cta-hover: linear-gradient(to right, #EA580C, #DC2626);
+      }
+
       * {
         margin: 0;
         padding: 0;
@@ -93,10 +127,10 @@
       body {
         font-family: 'Amiko', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
         line-height: 1.5;
-        color: #111827;
-        background: #ffffff;
+        color: var(--color-foreground);
+        background: var(--color-background);
       }
-      
+
       a {
         text-decoration: none;
       }
@@ -108,13 +142,19 @@
       .page-width {
         max-width: 1280px;
         margin: 0 auto;
-        padding: 0 24px;
+        padding: 0 16px;
+      }
+
+      @media (min-width: 640px) {
+        .page-width {
+          padding: 0 24px;
+        }
       }
 
       main {
         min-height: calc(100vh - 400px);
       }
-      
+
       /* Add padding for non-homepage content */
       main:not(.homepage-main) {
         padding: 40px 0;
@@ -126,6 +166,63 @@
       .shopify-section-header,
       .shopify-section-footer {
         display: none !important;
+      }
+
+      /* Button Styles */
+      .btn-primary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 12px 24px;
+        background: var(--gradient-cta);
+        color: white;
+        border: none;
+        border-radius: 6px;
+        font-size: 16px;
+        font-weight: 600;
+        font-family: 'Amiko', sans-serif;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-decoration: none;
+        box-shadow: 0 4px 6px -1px rgba(249, 115, 22, 0.3);
+      }
+
+      .btn-primary:hover {
+        background: var(--gradient-cta-hover);
+        transform: scale(1.02);
+        box-shadow: 0 10px 15px -3px rgba(249, 115, 22, 0.4);
+      }
+
+      .btn-secondary {
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        padding: 12px 24px;
+        background: transparent;
+        color: var(--color-primary);
+        border: 2px solid var(--color-primary);
+        border-radius: 6px;
+        font-size: 16px;
+        font-weight: 600;
+        font-family: 'Amiko', sans-serif;
+        cursor: pointer;
+        transition: all 0.2s;
+        text-decoration: none;
+      }
+
+      .btn-secondary:hover {
+        background: var(--color-primary);
+        color: white;
+      }
+
+      .btn-sm {
+        padding: 8px 16px;
+        font-size: 14px;
+      }
+
+      .btn-lg {
+        padding: 16px 32px;
+        font-size: 18px;
       }
     </style>
 
@@ -161,7 +258,7 @@
 
         // Send updates on cart changes
         document.addEventListener('cart:change', sendCartUpdate);
-        
+
         // Send initial cart state
         sendCartUpdate();
       }

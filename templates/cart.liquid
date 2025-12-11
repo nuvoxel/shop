@@ -1,22 +1,43 @@
 {% comment %}
-  Cart Page Template
+  Cart Page Template - NuVoxel Corporate Theme
 {% endcomment %}
 
 <div class="nuvoxel-cart-page">
-  <div class="page-width">
-    <h1 class="nuvoxel-cart-title">Shopping Cart</h1>
+  <!-- Hero Header -->
+  <div class="nuvoxel-cart-hero">
+    <div class="page-width">
+      <nav class="nuvoxel-breadcrumbs">
+        <a href="{{ shop.url }}">Home</a>
+        <span>/</span>
+        <span>Shopping Cart</span>
+      </nav>
+      <h1 class="nuvoxel-cart-title">
+        Shopping Cart
+        {% if cart.item_count > 0 %}
+          <span class="nuvoxel-cart-count-badge">{{ cart.item_count }} {{ cart.item_count | pluralize: 'item', 'items' }}</span>
+        {% endif %}
+      </h1>
+    </div>
+  </div>
 
+  <div class="page-width">
     {% if cart.item_count > 0 %}
       <div class="nuvoxel-cart-container">
         <!-- Cart Items -->
         <div class="nuvoxel-cart-items">
+          <div class="nuvoxel-cart-items-header">
+            <span class="nuvoxel-header-product">Product</span>
+            <span class="nuvoxel-header-quantity">Quantity</span>
+            <span class="nuvoxel-header-total">Total</span>
+          </div>
+
           <form action="{{ routes.cart_url }}" method="post" id="cart-form">
             {% for item in cart.items %}
               <div class="nuvoxel-cart-item">
                 <!-- Product Image -->
                 <div class="nuvoxel-cart-item-image">
                   <a href="{{ item.url }}">
-                    <img src="{{ item.image | image_url: width: 120 }}" 
+                    <img src="{{ item.image | image_url: width: 150 }}"
                          alt="{{ item.image.alt | escape }}"
                          loading="lazy">
                   </a>
@@ -27,44 +48,58 @@
                   <h3 class="nuvoxel-cart-item-title">
                     <a href="{{ item.url }}">{{ item.product.title }}</a>
                   </h3>
-                  
+
                   {% unless item.product.has_only_default_variant %}
                     <p class="nuvoxel-cart-item-variant">{{ item.variant.title }}</p>
                   {% endunless %}
-                  
+
                   {% if item.vendor %}
                     <p class="nuvoxel-cart-item-vendor">{{ item.vendor }}</p>
                   {% endif %}
 
-                  <!-- Quantity Controls -->
-                  <div class="nuvoxel-cart-quantity">
-                    <button type="button" class="nuvoxel-quantity-btn" data-action="decrease" data-line="{{ forloop.index }}">
-                      -
-                    </button>
-                    <input type="number" 
-                           name="updates[]" 
-                           value="{{ item.quantity }}" 
-                           min="0"
-                           class="nuvoxel-quantity-input"
-                           data-line="{{ forloop.index }}">
-                    <button type="button" class="nuvoxel-quantity-btn" data-action="increase" data-line="{{ forloop.index }}">
-                      +
-                    </button>
-                  </div>
-                </div>
-
-                <!-- Price & Remove -->
-                <div class="nuvoxel-cart-item-price">
-                  <div class="nuvoxel-price-group">
+                  <div class="nuvoxel-cart-item-unit-price">
                     {% if item.original_price != item.final_price %}
                       <span class="nuvoxel-price-original">{{ item.original_price | money }}</span>
                     {% endif %}
-                    <span class="nuvoxel-price-final">{{ item.final_price | money }}</span>
+                    <span class="nuvoxel-unit-price">{{ item.final_price | money }}</span>
                   </div>
-                  
+                </div>
+
+                <!-- Quantity Controls -->
+                <div class="nuvoxel-cart-item-quantity">
+                  <div class="nuvoxel-quantity-controls">
+                    <button type="button" class="nuvoxel-quantity-btn" data-action="decrease" data-line="{{ forloop.index }}" aria-label="Decrease quantity">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                      </svg>
+                    </button>
+                    <input type="number"
+                           name="updates[]"
+                           value="{{ item.quantity }}"
+                           min="0"
+                           class="nuvoxel-quantity-input"
+                           data-line="{{ forloop.index }}"
+                           aria-label="Quantity">
+                    <button type="button" class="nuvoxel-quantity-btn" data-action="increase" data-line="{{ forloop.index }}" aria-label="Increase quantity">
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <line x1="12" y1="5" x2="12" y2="19"></line>
+                        <line x1="5" y1="12" x2="19" y2="12"></line>
+                      </svg>
+                    </button>
+                  </div>
+
                   <button type="button" class="nuvoxel-remove-item" data-line="{{ forloop.index }}">
+                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                      <polyline points="3 6 5 6 21 6"></polyline>
+                      <path d="M19 6v14a2 2 0 0 1-2 2H7a2 2 0 0 1-2-2V6m3 0V4a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"></path>
+                    </svg>
                     Remove
                   </button>
+                </div>
+
+                <!-- Line Total -->
+                <div class="nuvoxel-cart-item-total">
+                  <span class="nuvoxel-line-total">{{ item.final_line_price | money }}</span>
                 </div>
               </div>
             {% endfor %}
@@ -73,57 +108,127 @@
               <button type="submit" class="nuvoxel-update-cart">Update Cart</button>
             </noscript>
           </form>
+
+          <!-- Continue Shopping Link -->
+          <div class="nuvoxel-cart-actions">
+            <a href="{{ routes.all_products_collection_url }}" class="nuvoxel-continue-shopping">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <line x1="19" y1="12" x2="5" y2="12"></line>
+                <polyline points="12 19 5 12 12 5"></polyline>
+              </svg>
+              Continue Shopping
+            </a>
+          </div>
         </div>
 
         <!-- Cart Summary -->
         <div class="nuvoxel-cart-summary">
-          <h2>Order Summary</h2>
-          
-          <div class="nuvoxel-summary-row">
-            <span>Subtotal</span>
-            <span>{{ cart.total_price | money }}</span>
-          </div>
+          <div class="nuvoxel-summary-card">
+            <h2>Order Summary</h2>
 
-          {% if cart.cart_level_discount_applications.size > 0 %}
-            {% for discount in cart.cart_level_discount_applications %}
-              <div class="nuvoxel-summary-row nuvoxel-discount">
-                <span>{{ discount.title }}</span>
-                <span>-{{ discount.total_allocated_amount | money }}</span>
+            <div class="nuvoxel-summary-details">
+              <div class="nuvoxel-summary-row">
+                <span>Subtotal ({{ cart.item_count }} {{ cart.item_count | pluralize: 'item', 'items' }})</span>
+                <span>{{ cart.items_subtotal_price | money }}</span>
               </div>
-            {% endfor %}
-          {% endif %}
 
-          <div class="nuvoxel-summary-row nuvoxel-summary-total">
-            <span>Total</span>
-            <span>{{ cart.total_price | money }}</span>
-          </div>
+              {% if cart.cart_level_discount_applications.size > 0 %}
+                {% for discount in cart.cart_level_discount_applications %}
+                  <div class="nuvoxel-summary-row nuvoxel-discount">
+                    <span>
+                      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M20.59 13.41l-7.17 7.17a2 2 0 0 1-2.83 0L2 12V2h10l8.59 8.59a2 2 0 0 1 0 2.82z"></path>
+                        <line x1="7" y1="7" x2="7.01" y2="7"></line>
+                      </svg>
+                      {{ discount.title }}
+                    </span>
+                    <span>-{{ discount.total_allocated_amount | money }}</span>
+                  </div>
+                {% endfor %}
+              {% endif %}
 
-          <!-- Checkout Button -->
-          <form action="{{ routes.cart_url }}" method="post">
-            <button type="submit" name="checkout" class="nuvoxel-checkout-btn">
-              Proceed to Checkout
-            </button>
-          </form>
-
-          <!-- Continue Shopping -->
-          <a href="{{ routes.all_products_collection_url }}" class="nuvoxel-continue-shopping">
-            ← Continue Shopping
-          </a>
-
-          <!-- Trust Badges -->
-          <div class="nuvoxel-trust-badges">
-            <div class="nuvoxel-badge">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
-              </svg>
-              <span>Secure Checkout</span>
+              <div class="nuvoxel-summary-row nuvoxel-shipping-notice">
+                <span>Shipping</span>
+                <span>Calculated at checkout</span>
+              </div>
             </div>
-            <div class="nuvoxel-badge">
-              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
-                <rect x="1" y="4" width="22" height="16" rx="2" ry="2"></rect>
-                <line x1="1" y1="10" x2="23" y2="10"></line>
-              </svg>
-              <span>Payment Protection</span>
+
+            <div class="nuvoxel-summary-total">
+              <span>Estimated Total</span>
+              <span>{{ cart.total_price | money }}</span>
+            </div>
+
+            <!-- Checkout Button -->
+            <form action="{{ routes.cart_url }}" method="post">
+              <button type="submit" name="checkout" class="nuvoxel-checkout-btn">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="3" y="11" width="18" height="11" rx="2" ry="2"></rect>
+                  <path d="M7 11V7a5 5 0 0 1 10 0v4"></path>
+                </svg>
+                Proceed to Checkout
+              </button>
+            </form>
+
+            <!-- Payment Methods -->
+            <div class="nuvoxel-payment-methods">
+              <span>We accept:</span>
+              <div class="nuvoxel-payment-icons">
+                <svg viewBox="0 0 38 24" width="38" height="24" xmlns="http://www.w3.org/2000/svg">
+                  <rect fill="#fff" height="24" rx="3" width="38"/>
+                  <path d="M16.5 17h-4l2.5-10h4l-2.5 10z" fill="#00579F"/>
+                  <path d="M28.5 7.5c-.8-.3-2-.6-3.5-.6-4 0-6.5 2-6.5 5 0 2 2 3 3.5 4 1.5.5 2 1 2 1.5 0 1-1.5 1.5-2.5 1.5-1.5 0-2.5-.3-4-.8l-.5-.3-.5 3c1 .4 3 .8 5 .8 4 0 6.5-2 6.5-5 0-1.5-1-3-3.5-4-1.5-.5-2-1-2-1.5 0-.5 1-1 2-1 1.5 0 2.5.3 3.5.6l.5.3.5-3z" fill="#00579F"/>
+                  <path d="M35 7h-3c-1 0-1.5.3-2 1l-5 9h4l.5-2h4.5c0 .5.5 2 .5 2h3.5L35 7zm-4.5 7l1.5-4 1 4h-2.5z" fill="#00579F"/>
+                  <path d="M13 7L9 17l-.5-2c-1-3-3.5-5-6-6l3.5 8H10l5-10h-2z" fill="#00579F"/>
+                </svg>
+                <svg viewBox="0 0 38 24" width="38" height="24" xmlns="http://www.w3.org/2000/svg">
+                  <rect fill="#fff" height="24" rx="3" width="38"/>
+                  <circle cx="15" cy="12" fill="#EB001B" r="7"/>
+                  <circle cx="23" cy="12" fill="#F79E1B" r="7"/>
+                  <path d="M19 7c1.7 1.3 2.8 3.5 2.8 6s-1.1 4.7-2.8 6c-1.7-1.3-2.8-3.5-2.8-6s1.1-4.7 2.8-6z" fill="#FF5F00"/>
+                </svg>
+                <svg viewBox="0 0 38 24" width="38" height="24" xmlns="http://www.w3.org/2000/svg">
+                  <rect fill="#fff" height="24" rx="3" width="38"/>
+                  <path d="M17 9h4v6h-4z" fill="#FF5F00"/>
+                  <path d="M17.5 12a4 4 0 0 1 1.5-3 4 4 0 1 0 0 6 4 4 0 0 1-1.5-3z" fill="#EB001B"/>
+                  <path d="M25.5 12a4 4 0 0 1-6.5 3 4 4 0 0 0 0-6 4 4 0 0 1 6.5 3z" fill="#F79E1B"/>
+                </svg>
+              </div>
+            </div>
+
+            <!-- Trust Badges -->
+            <div class="nuvoxel-trust-badges">
+              <div class="nuvoxel-badge">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path>
+                </svg>
+                <div>
+                  <strong>Secure Checkout</strong>
+                  <span>256-bit SSL encryption</span>
+                </div>
+              </div>
+              <div class="nuvoxel-badge">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="M16 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"></path>
+                  <circle cx="8.5" cy="7" r="4"></circle>
+                  <polyline points="17 11 19 13 23 9"></polyline>
+                </svg>
+                <div>
+                  <strong>Expert Support</strong>
+                  <span>Help when you need it</span>
+                </div>
+              </div>
+              <div class="nuvoxel-badge">
+                <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <rect x="1" y="3" width="15" height="13"></rect>
+                  <polygon points="16 8 20 8 23 11 23 16 16 16 16 8"></polygon>
+                  <circle cx="5.5" cy="18.5" r="2.5"></circle>
+                  <circle cx="18.5" cy="18.5" r="2.5"></circle>
+                </svg>
+                <div>
+                  <strong>Fast Shipping</strong>
+                  <span>Free on orders over $50</span>
+                </div>
+              </div>
             </div>
           </div>
         </div>
@@ -132,16 +237,47 @@
     {% else %}
       <!-- Empty Cart -->
       <div class="nuvoxel-empty-cart">
-        <svg width="120" height="120" viewBox="0 0 24 24" fill="none" stroke="#e5e7eb" stroke-width="2">
-          <circle cx="9" cy="21" r="1"></circle>
-          <circle cx="20" cy="21" r="1"></circle>
-          <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
-        </svg>
+        <div class="nuvoxel-empty-cart-icon">
+          <svg width="80" height="80" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+            <circle cx="9" cy="21" r="1"></circle>
+            <circle cx="20" cy="21" r="1"></circle>
+            <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
+          </svg>
+        </div>
         <h2>Your cart is empty</h2>
-        <p>Looks like you haven't added anything to your cart yet.</p>
+        <p>Looks like you haven't added anything to your cart yet. Start shopping to fill it up!</p>
         <a href="{{ routes.all_products_collection_url }}" class="nuvoxel-start-shopping">
-          Start Shopping
+          Browse Products
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <line x1="5" y1="12" x2="19" y2="12"></line>
+            <polyline points="12 5 19 12 12 19"></polyline>
+          </svg>
         </a>
+
+        <!-- Featured Categories for Empty Cart -->
+        <div class="nuvoxel-empty-cart-suggestions">
+          <h3>Popular Categories</h3>
+          <div class="nuvoxel-suggestion-cards">
+            {% for collection in collections limit: 3 %}
+              {% if collection.handle != 'all' %}
+                <a href="{{ collection.url }}" class="nuvoxel-suggestion-card">
+                  {% if collection.image %}
+                    <img src="{{ collection.image | image_url: width: 200 }}" alt="{{ collection.title }}">
+                  {% else %}
+                    <div class="nuvoxel-suggestion-placeholder">
+                      <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                        <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                        <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                        <polyline points="21 15 16 10 5 21"></polyline>
+                      </svg>
+                    </div>
+                  {% endif %}
+                  <span>{{ collection.title }}</span>
+                </a>
+              {% endif %}
+            {% endfor %}
+          </div>
+        </div>
       </div>
     {% endif %}
   </div>
@@ -149,268 +285,564 @@
 
 <style>
   .nuvoxel-cart-page {
-    padding: 40px 0;
     min-height: 60vh;
+    background: var(--color-background);
+  }
+
+  /* Hero Header */
+  .nuvoxel-cart-hero {
+    background: linear-gradient(135deg, var(--color-primary) 0%, #1e40af 100%);
+    padding: 48px 0;
+    margin-bottom: 48px;
+  }
+
+  .nuvoxel-breadcrumbs {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: rgba(255, 255, 255, 0.7);
+    margin-bottom: 16px;
+    font-family: 'Amiko', sans-serif;
+  }
+
+  .nuvoxel-breadcrumbs a {
+    color: rgba(255, 255, 255, 0.7);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .nuvoxel-breadcrumbs a:hover {
+    color: white;
   }
 
   .nuvoxel-cart-title {
-    font-size: 32px;
+    font-size: 36px;
     font-weight: 700;
-    color: #111827;
-    margin-bottom: 32px;
+    color: white;
+    margin: 0;
+    font-family: 'Amiko', sans-serif;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+  }
+
+  .nuvoxel-cart-count-badge {
+    font-size: 14px;
+    font-weight: 500;
+    background: rgba(255, 255, 255, 0.2);
+    padding: 6px 12px;
+    border-radius: 20px;
+    backdrop-filter: blur(4px);
   }
 
   .nuvoxel-cart-container {
     display: grid;
-    grid-template-columns: 1fr 380px;
-    gap: 40px;
+    grid-template-columns: 1fr 400px;
+    gap: 32px;
+    padding-bottom: 64px;
   }
 
-  /* Cart Items */
+  /* Cart Items Section */
   .nuvoxel-cart-items {
     background: white;
-    border: 1px solid #e5e7eb;
-    border-radius: 8px;
-    padding: 24px;
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    overflow: hidden;
+  }
+
+  .nuvoxel-cart-items-header {
+    display: grid;
+    grid-template-columns: 2fr 1fr 1fr;
+    gap: 20px;
+    padding: 16px 24px;
+    background: #f8fafc;
+    border-bottom: 1px solid var(--color-border);
+    font-size: 12px;
+    font-weight: 600;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+    color: var(--color-muted);
+    font-family: 'Amiko', sans-serif;
+  }
+
+  .nuvoxel-header-quantity,
+  .nuvoxel-header-total {
+    text-align: center;
   }
 
   .nuvoxel-cart-item {
     display: grid;
-    grid-template-columns: 120px 1fr auto;
+    grid-template-columns: 120px 1fr 160px 100px;
     gap: 20px;
-    padding: 20px 0;
-    border-bottom: 1px solid #e5e7eb;
+    padding: 24px;
+    border-bottom: 1px solid var(--color-border);
+    align-items: center;
   }
 
-  .nuvoxel-cart-item:last-child {
+  .nuvoxel-cart-item:last-of-type {
     border-bottom: none;
+  }
+
+  .nuvoxel-cart-item-image {
+    background: #f8fafc;
+    border-radius: 8px;
+    overflow: hidden;
   }
 
   .nuvoxel-cart-item-image img {
     width: 100%;
     height: auto;
-    border-radius: 6px;
+    display: block;
+    transition: transform 0.3s;
+  }
+
+  .nuvoxel-cart-item-image:hover img {
+    transform: scale(1.05);
+  }
+
+  .nuvoxel-cart-item-details {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
   }
 
   .nuvoxel-cart-item-title {
     font-size: 16px;
     font-weight: 600;
-    margin-bottom: 8px;
+    margin: 0;
+    font-family: 'Amiko', sans-serif;
   }
 
   .nuvoxel-cart-item-title a {
-    color: #111827;
+    color: var(--color-primary);
     text-decoration: none;
+    transition: color 0.2s;
   }
 
   .nuvoxel-cart-item-title a:hover {
-    color: #10b981;
+    color: var(--color-secondary);
   }
 
   .nuvoxel-cart-item-variant,
   .nuvoxel-cart-item-vendor {
-    font-size: 14px;
-    color: #6b7280;
-    margin: 4px 0;
+    font-size: 13px;
+    color: var(--color-muted);
+    margin: 0;
+    font-family: 'Amiko', sans-serif;
   }
 
-  .nuvoxel-cart-quantity {
+  .nuvoxel-cart-item-unit-price {
+    margin-top: 8px;
+  }
+
+  .nuvoxel-price-original {
+    font-size: 13px;
+    color: var(--color-muted);
+    text-decoration: line-through;
+    margin-right: 8px;
+  }
+
+  .nuvoxel-unit-price {
+    font-size: 14px;
+    color: var(--color-foreground);
+    font-weight: 500;
+  }
+
+  /* Quantity Controls */
+  .nuvoxel-cart-item-quantity {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 12px;
+  }
+
+  .nuvoxel-quantity-controls {
     display: flex;
     align-items: center;
-    gap: 8px;
-    margin-top: 12px;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    overflow: hidden;
   }
 
   .nuvoxel-quantity-btn {
-    width: 32px;
-    height: 32px;
-    border: 1px solid #d1d5db;
+    width: 40px;
+    height: 40px;
+    border: none;
     background: white;
-    border-radius: 4px;
     cursor: pointer;
-    font-size: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-muted);
     transition: all 0.2s;
   }
 
   .nuvoxel-quantity-btn:hover {
-    background: #10b981;
+    background: var(--color-primary);
     color: white;
-    border-color: #10b981;
   }
 
   .nuvoxel-quantity-input {
-    width: 60px;
-    height: 32px;
+    width: 50px;
+    height: 40px;
     text-align: center;
-    border: 1px solid #d1d5db;
-    border-radius: 4px;
+    border: none;
+    border-left: 1px solid var(--color-border);
+    border-right: 1px solid var(--color-border);
     font-size: 14px;
+    font-weight: 500;
+    font-family: 'Amiko', sans-serif;
+    -moz-appearance: textfield;
   }
 
-  .nuvoxel-cart-item-price {
-    text-align: right;
-  }
-
-  .nuvoxel-price-group {
-    margin-bottom: 12px;
-  }
-
-  .nuvoxel-price-original {
-    display: block;
-    font-size: 14px;
-    color: #6b7280;
-    text-decoration: line-through;
-  }
-
-  .nuvoxel-price-final {
-    display: block;
-    font-size: 18px;
-    font-weight: 600;
-    color: #10b981;
+  .nuvoxel-quantity-input::-webkit-outer-spin-button,
+  .nuvoxel-quantity-input::-webkit-inner-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
   }
 
   .nuvoxel-remove-item {
-    font-size: 14px;
-    color: #ef4444;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 13px;
+    color: var(--color-muted);
     background: none;
     border: none;
     cursor: pointer;
-    text-decoration: none;
+    transition: color 0.2s;
+    font-family: 'Amiko', sans-serif;
   }
 
   .nuvoxel-remove-item:hover {
-    color: #dc2626;
+    color: #ef4444;
+  }
+
+  /* Line Total */
+  .nuvoxel-cart-item-total {
+    text-align: center;
+  }
+
+  .nuvoxel-line-total {
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--color-primary);
+    font-family: 'Amiko', sans-serif;
+  }
+
+  /* Cart Actions */
+  .nuvoxel-cart-actions {
+    padding: 20px 24px;
+    border-top: 1px solid var(--color-border);
+    background: #f8fafc;
+  }
+
+  .nuvoxel-continue-shopping {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 14px;
+    color: var(--color-primary);
+    text-decoration: none;
+    font-weight: 500;
+    font-family: 'Amiko', sans-serif;
+    transition: gap 0.2s;
+  }
+
+  .nuvoxel-continue-shopping:hover {
+    gap: 12px;
+  }
+
+  .nuvoxel-update-cart {
+    padding: 12px 24px;
+    background: var(--color-secondary);
+    color: white;
+    border: none;
+    border-radius: 6px;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    margin-top: 16px;
   }
 
   /* Cart Summary */
   .nuvoxel-cart-summary {
-    background: white;
-    border: 1px solid #e5e7eb;
-    border-radius: 8px;
-    padding: 24px;
     height: fit-content;
     position: sticky;
-    top: 20px;
+    top: 100px;
   }
 
-  .nuvoxel-cart-summary h2 {
+  .nuvoxel-summary-card {
+    background: white;
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    padding: 24px;
+  }
+
+  .nuvoxel-summary-card h2 {
     font-size: 20px;
-    font-weight: 600;
-    margin-bottom: 20px;
-    color: #111827;
+    font-weight: 700;
+    color: var(--color-primary);
+    margin: 0 0 20px 0;
+    font-family: 'Amiko', sans-serif;
+  }
+
+  .nuvoxel-summary-details {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding-bottom: 16px;
+    border-bottom: 1px solid var(--color-border);
   }
 
   .nuvoxel-summary-row {
     display: flex;
     justify-content: space-between;
-    margin-bottom: 12px;
+    align-items: center;
     font-size: 14px;
-    color: #6b7280;
+    color: var(--color-foreground);
+    font-family: 'Amiko', sans-serif;
+  }
+
+  .nuvoxel-summary-row.nuvoxel-discount {
+    color: #059669;
+  }
+
+  .nuvoxel-summary-row.nuvoxel-discount span:first-child {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+  }
+
+  .nuvoxel-shipping-notice span:last-child {
+    font-style: italic;
+    color: var(--color-muted);
+    font-size: 13px;
   }
 
   .nuvoxel-summary-total {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 16px 0;
     font-size: 18px;
-    font-weight: 600;
-    color: #111827;
-    padding-top: 12px;
-    margin-top: 12px;
-    border-top: 1px solid #e5e7eb;
-  }
-
-  .nuvoxel-discount {
-    color: #059669;
+    font-weight: 700;
+    color: var(--color-primary);
+    font-family: 'Amiko', sans-serif;
   }
 
   .nuvoxel-checkout-btn {
     width: 100%;
-    padding: 14px;
-    background: #059669;
+    padding: 16px 24px;
+    background: linear-gradient(to right, #F97316, #EF4444);
     color: white;
     border: none;
-    border-radius: 6px;
+    border-radius: 8px;
     font-size: 16px;
     font-weight: 600;
     cursor: pointer;
-    margin-top: 20px;
-    transition: background 0.2s;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    font-family: 'Amiko', sans-serif;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 14px rgba(249, 115, 22, 0.3);
   }
 
   .nuvoxel-checkout-btn:hover {
-    background: #047857;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(249, 115, 22, 0.4);
   }
 
-  .nuvoxel-continue-shopping {
-    display: block;
+  /* Payment Methods */
+  .nuvoxel-payment-methods {
+    margin-top: 20px;
+    padding-top: 16px;
+    border-top: 1px solid var(--color-border);
     text-align: center;
-    margin-top: 16px;
-    color: #059669;
-    text-decoration: none;
-    font-size: 14px;
   }
 
-  .nuvoxel-continue-shopping:hover {
-    text-decoration: none;
-    opacity: 0.8;
+  .nuvoxel-payment-methods > span {
+    font-size: 12px;
+    color: var(--color-muted);
+    font-family: 'Amiko', sans-serif;
+    display: block;
+    margin-bottom: 8px;
   }
 
+  .nuvoxel-payment-icons {
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+    opacity: 0.7;
+  }
+
+  /* Trust Badges */
   .nuvoxel-trust-badges {
-    margin-top: 24px;
-    padding-top: 24px;
-    border-top: 1px solid #e5e7eb;
+    margin-top: 20px;
+    padding-top: 20px;
+    border-top: 1px solid var(--color-border);
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
   }
 
   .nuvoxel-badge {
     display: flex;
-    align-items: center;
-    gap: 8px;
-    margin-bottom: 12px;
-    font-size: 13px;
-    color: #6b7280;
+    align-items: flex-start;
+    gap: 12px;
+    font-family: 'Amiko', sans-serif;
   }
 
   .nuvoxel-badge svg {
-    color: #059669;
+    color: var(--color-secondary);
+    flex-shrink: 0;
+    margin-top: 2px;
+  }
+
+  .nuvoxel-badge div {
+    display: flex;
+    flex-direction: column;
+  }
+
+  .nuvoxel-badge strong {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--color-foreground);
+  }
+
+  .nuvoxel-badge span {
+    font-size: 12px;
+    color: var(--color-muted);
   }
 
   /* Empty Cart */
   .nuvoxel-empty-cart {
     text-align: center;
     padding: 80px 20px;
+    max-width: 600px;
+    margin: 0 auto;
   }
 
-  .nuvoxel-empty-cart svg {
+  .nuvoxel-empty-cart-icon {
+    width: 120px;
+    height: 120px;
+    background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
     margin: 0 auto 24px;
   }
 
+  .nuvoxel-empty-cart-icon svg {
+    color: var(--color-muted);
+  }
+
   .nuvoxel-empty-cart h2 {
-    font-size: 24px;
-    font-weight: 600;
-    color: #111827;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--color-primary);
     margin-bottom: 12px;
+    font-family: 'Amiko', sans-serif;
   }
 
   .nuvoxel-empty-cart p {
     font-size: 16px;
-    color: #6b7280;
-    margin-bottom: 24px;
+    color: var(--color-muted);
+    margin-bottom: 32px;
+    line-height: 1.6;
+    font-family: 'Amiko', sans-serif;
   }
 
   .nuvoxel-start-shopping {
-    display: inline-block;
-    padding: 14px 32px;
-    background: #10b981;
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 16px 32px;
+    background: linear-gradient(to right, #F97316, #EF4444);
     color: white;
     text-decoration: none;
-    border-radius: 6px;
+    border-radius: 8px;
     font-weight: 600;
-    transition: background 0.2s;
+    font-size: 16px;
+    font-family: 'Amiko', sans-serif;
+    transition: transform 0.2s, box-shadow 0.2s;
+    box-shadow: 0 4px 14px rgba(249, 115, 22, 0.3);
   }
 
   .nuvoxel-start-shopping:hover {
-    background: #059669;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 20px rgba(249, 115, 22, 0.4);
   }
 
-  @media (max-width: 968px) {
+  /* Empty Cart Suggestions */
+  .nuvoxel-empty-cart-suggestions {
+    margin-top: 64px;
+    padding-top: 48px;
+    border-top: 1px solid var(--color-border);
+  }
+
+  .nuvoxel-empty-cart-suggestions h3 {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--color-primary);
+    margin-bottom: 24px;
+    font-family: 'Amiko', sans-serif;
+  }
+
+  .nuvoxel-suggestion-cards {
+    display: flex;
+    justify-content: center;
+    gap: 20px;
+    flex-wrap: wrap;
+  }
+
+  .nuvoxel-suggestion-card {
+    width: 160px;
+    text-decoration: none;
+    border: 1px solid var(--color-border);
+    border-radius: 12px;
+    overflow: hidden;
+    transition: transform 0.2s, box-shadow 0.2s;
+  }
+
+  .nuvoxel-suggestion-card:hover {
+    transform: translateY(-4px);
+    box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+  }
+
+  .nuvoxel-suggestion-card img {
+    width: 100%;
+    height: 120px;
+    object-fit: cover;
+  }
+
+  .nuvoxel-suggestion-placeholder {
+    width: 100%;
+    height: 120px;
+    background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-muted);
+  }
+
+  .nuvoxel-suggestion-card span {
+    display: block;
+    padding: 12px;
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--color-primary);
+    font-family: 'Amiko', sans-serif;
+    text-align: center;
+  }
+
+  /* Responsive Design */
+  @media (max-width: 1024px) {
     .nuvoxel-cart-container {
       grid-template-columns: 1fr;
     }
@@ -418,15 +850,70 @@
     .nuvoxel-cart-summary {
       position: static;
     }
+  }
 
+  @media (max-width: 768px) {
+    .nuvoxel-cart-hero {
+      padding: 32px 0;
+      margin-bottom: 32px;
+    }
+
+    .nuvoxel-cart-title {
+      font-size: 28px;
+    }
+
+    .nuvoxel-cart-items-header {
+      display: none;
+    }
+
+    .nuvoxel-cart-item {
+      grid-template-columns: 100px 1fr;
+      gap: 16px;
+    }
+
+    .nuvoxel-cart-item-quantity {
+      grid-column: 1 / -1;
+      flex-direction: row;
+      justify-content: space-between;
+      margin-top: 8px;
+    }
+
+    .nuvoxel-cart-item-total {
+      grid-column: 2;
+      grid-row: 1 / 3;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: flex-end;
+    }
+
+    .nuvoxel-empty-cart-suggestions {
+      margin-top: 48px;
+      padding-top: 32px;
+    }
+
+    .nuvoxel-suggestion-cards {
+      gap: 12px;
+    }
+
+    .nuvoxel-suggestion-card {
+      width: 140px;
+    }
+  }
+
+  @media (max-width: 480px) {
     .nuvoxel-cart-item {
       grid-template-columns: 80px 1fr;
     }
 
-    .nuvoxel-cart-item-price {
-      grid-column: 2;
-      text-align: left;
-      margin-top: 12px;
+    .nuvoxel-quantity-btn {
+      width: 36px;
+      height: 36px;
+    }
+
+    .nuvoxel-quantity-input {
+      width: 44px;
+      height: 36px;
     }
   }
 </style>
@@ -439,13 +926,13 @@
       const action = this.dataset.action;
       const input = document.querySelector(`.nuvoxel-quantity-input[data-line="${line}"]`);
       let value = parseInt(input.value);
-      
+
       if (action === 'increase') {
         input.value = value + 1;
       } else if (action === 'decrease' && value > 0) {
         input.value = value - 1;
       }
-      
+
       // Auto-submit form
       document.getElementById('cart-form').submit();
     });

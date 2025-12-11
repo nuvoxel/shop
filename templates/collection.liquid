@@ -1,21 +1,45 @@
 {% comment %}
-  Collection Page Template
+  Collection Page Template - Visual design matching corporate site
 {% endcomment %}
 
 <div class="nuvoxel-collection-page">
-  <div class="page-width">
-    <!-- Collection Header -->
-    <div class="nuvoxel-collection-header">
-      <h1 class="nuvoxel-collection-title">{{ collection.title }}</h1>
-      {% if collection.description != blank %}
-        <div class="nuvoxel-collection-description">
-          {{ collection.description }}
-        </div>
+  <!-- Collection Hero -->
+  <section class="nuvoxel-collection-hero">
+    <div class="nuvoxel-collection-hero-bg">
+      {% if collection.image %}
+        <img src="{{ collection.image | image_url: width: 1920 }}"
+             alt="{{ collection.title }}"
+             class="nuvoxel-collection-hero-image">
       {% endif %}
-      
-      <!-- Product Count & Sort -->
+      <div class="nuvoxel-collection-hero-overlay"></div>
+    </div>
+    <div class="page-width">
+      <div class="nuvoxel-collection-hero-content">
+        <nav class="nuvoxel-breadcrumbs" aria-label="Breadcrumb">
+          <a href="{{ routes.root_url }}">Home</a>
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <polyline points="9 18 15 12 9 6"></polyline>
+          </svg>
+          <span>{{ collection.title }}</span>
+        </nav>
+        <h1 class="nuvoxel-collection-title">{{ collection.title }}</h1>
+        {% if collection.description != blank %}
+          <div class="nuvoxel-collection-description">
+            {{ collection.description }}
+          </div>
+        {% endif %}
+      </div>
+    </div>
+  </section>
+
+  <!-- Collection Content -->
+  <section class="nuvoxel-collection-content">
+    <div class="page-width">
+      <!-- Controls -->
       <div class="nuvoxel-collection-controls">
-        <span class="nuvoxel-product-count">{{ collection.products_count }} products</span>
+        <span class="nuvoxel-product-count">
+          {{ collection.products_count }} {% if collection.products_count == 1 %}product{% else %}products{% endif %}
+        </span>
         <div class="nuvoxel-sort-wrapper">
           <label for="sort-by">Sort by:</label>
           <select id="sort-by" class="nuvoxel-sort-select">
@@ -30,163 +54,259 @@
           </select>
         </div>
       </div>
-    </div>
 
-    <!-- Products Grid -->
-    <div class="nuvoxel-products-grid">
-      {% for product in collection.products %}
-        <div class="nuvoxel-product-card">
-          <a href="{{ product.url }}" class="nuvoxel-product-link">
-            {% if product.featured_image %}
-              <div class="nuvoxel-product-image">
-                <img src="{{ product.featured_image | image_url: width: 300 }}" 
-                     alt="{{ product.featured_image.alt | escape }}"
-                     loading="lazy">
-                {% if product.compare_at_price > product.price %}
-                  <span class="nuvoxel-badge-sale">Sale</span>
-                {% endif %}
-                {% unless product.available %}
-                  <span class="nuvoxel-badge-soldout">Sold Out</span>
-                {% endunless %}
-              </div>
-            {% endif %}
-            
-            <div class="nuvoxel-product-details">
-              <h3 class="nuvoxel-product-title">{{ product.title }}</h3>
-              
-              <div class="nuvoxel-product-price">
-                {% if product.compare_at_price > product.price %}
-                  <span class="nuvoxel-price-compare">{{ product.compare_at_price | money }}</span>
-                {% endif %}
-                <span class="nuvoxel-price-current">{{ product.price | money }}</span>
-              </div>
-
-              {% if product.vendor %}
-                <p class="nuvoxel-product-vendor">{{ product.vendor }}</p>
+      <!-- Products Grid -->
+      <div class="nuvoxel-products-grid">
+        {% for product in collection.products %}
+          <div class="nuvoxel-product-card">
+            <a href="{{ product.url }}" class="nuvoxel-product-link">
+              {% if product.featured_image %}
+                <div class="nuvoxel-product-image">
+                  <img src="{{ product.featured_image | image_url: width: 400 }}"
+                       alt="{{ product.featured_image.alt | escape }}"
+                       loading="lazy">
+                  {% if product.compare_at_price > product.price %}
+                    <span class="nuvoxel-badge-sale">Sale</span>
+                  {% endif %}
+                  {% unless product.available %}
+                    <span class="nuvoxel-badge-soldout">Sold Out</span>
+                  {% endunless %}
+                </div>
+              {% else %}
+                <div class="nuvoxel-product-image nuvoxel-product-placeholder">
+                  <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"></rect>
+                    <circle cx="8.5" cy="8.5" r="1.5"></circle>
+                    <polyline points="21 15 16 10 5 21"></polyline>
+                  </svg>
+                </div>
               {% endif %}
-            </div>
-          </a>
 
-          <!-- Quick Add Button -->
-          {% if product.available %}
-            <form action="{{ routes.cart_add_url }}" method="post" class="nuvoxel-quick-add-form">
-              <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
-              <input type="hidden" name="quantity" value="1">
-              <button type="submit" class="nuvoxel-quick-add">
-                Quick Add
-              </button>
-            </form>
-          {% endif %}
-        </div>
-      {% else %}
-        <div class="nuvoxel-empty-collection">
-          <p>No products found in this collection.</p>
-          <a href="{{ routes.all_products_collection_url }}" class="nuvoxel-browse-all">Browse All Products</a>
-        </div>
-      {% endfor %}
-    </div>
+              <div class="nuvoxel-product-details">
+                <h3 class="nuvoxel-product-title">{{ product.title }}</h3>
 
-    <!-- Pagination -->
-    {% if paginate.pages > 1 %}
-      <div class="nuvoxel-pagination">
-        {% if paginate.previous %}
-          <a href="{{ paginate.previous.url }}" class="nuvoxel-pagination-prev">← Previous</a>
-        {% endif %}
-        
-        {% for part in paginate.parts %}
-          {% if part.is_link %}
-            <a href="{{ part.url }}" class="nuvoxel-pagination-number {% if part.is_active %}active{% endif %}">
-              {{ part.title }}
+                <div class="nuvoxel-product-price">
+                  {% if product.compare_at_price > product.price %}
+                    <span class="nuvoxel-price-compare">{{ product.compare_at_price | money }}</span>
+                  {% endif %}
+                  <span class="nuvoxel-price-current">{{ product.price | money }}</span>
+                </div>
+
+                {% if product.vendor %}
+                  <p class="nuvoxel-product-vendor">{{ product.vendor }}</p>
+                {% endif %}
+              </div>
             </a>
-          {% else %}
-            <span class="nuvoxel-pagination-ellipsis">{{ part.title }}</span>
-          {% endif %}
+
+            <!-- Quick Add Button -->
+            {% if product.available %}
+              <form action="{{ routes.cart_add_url }}" method="post" class="nuvoxel-quick-add-form">
+                <input type="hidden" name="id" value="{{ product.selected_or_first_available_variant.id }}">
+                <input type="hidden" name="quantity" value="1">
+                <button type="submit" class="nuvoxel-quick-add">
+                  Add to Cart
+                </button>
+              </form>
+            {% endif %}
+          </div>
+        {% else %}
+          <div class="nuvoxel-empty-collection">
+            <svg width="64" height="64" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+              <circle cx="11" cy="11" r="8"></circle>
+              <line x1="21" y1="21" x2="16.65" y2="16.65"></line>
+            </svg>
+            <h3>No products found</h3>
+            <p>This collection doesn't have any products yet.</p>
+            <a href="{{ routes.all_products_collection_url }}" class="btn-primary">Browse All Products</a>
+          </div>
         {% endfor %}
-        
-        {% if paginate.next %}
-          <a href="{{ paginate.next.url }}" class="nuvoxel-pagination-next">Next →</a>
-        {% endif %}
       </div>
-    {% endif %}
-  </div>
+
+      <!-- Pagination -->
+      {% if paginate.pages > 1 %}
+        <div class="nuvoxel-pagination">
+          {% if paginate.previous %}
+            <a href="{{ paginate.previous.url }}" class="nuvoxel-pagination-btn">
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="15 18 9 12 15 6"></polyline>
+              </svg>
+              Previous
+            </a>
+          {% endif %}
+
+          <div class="nuvoxel-pagination-numbers">
+            {% for part in paginate.parts %}
+              {% if part.is_link %}
+                <a href="{{ part.url }}" class="nuvoxel-pagination-number {% if part.is_active %}active{% endif %}">
+                  {{ part.title }}
+                </a>
+              {% else %}
+                <span class="nuvoxel-pagination-ellipsis">{{ part.title }}</span>
+              {% endif %}
+            {% endfor %}
+          </div>
+
+          {% if paginate.next %}
+            <a href="{{ paginate.next.url }}" class="nuvoxel-pagination-btn">
+              Next
+              <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <polyline points="9 18 15 12 9 6"></polyline>
+              </svg>
+            </a>
+          {% endif %}
+        </div>
+      {% endif %}
+    </div>
+  </section>
 </div>
 
 <style>
   .nuvoxel-collection-page {
-    padding: 40px 0;
+    padding: 0;
   }
 
-  .nuvoxel-collection-header {
-    margin-bottom: 40px;
+  /* Collection Hero */
+  .nuvoxel-collection-hero {
+    position: relative;
+    padding: 80px 0;
+    min-height: 300px;
+    display: flex;
+    align-items: center;
+  }
+
+  .nuvoxel-collection-hero-bg {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(135deg, var(--color-primary), var(--color-primary-hover));
+  }
+
+  .nuvoxel-collection-hero-image {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  .nuvoxel-collection-hero-overlay {
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(to right, rgba(22, 49, 114, 0.9), rgba(22, 49, 114, 0.7));
+  }
+
+  .nuvoxel-collection-hero-content {
+    position: relative;
+    z-index: 1;
+    color: white;
+  }
+
+  .nuvoxel-breadcrumbs {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-bottom: 16px;
+    font-size: 14px;
+  }
+
+  .nuvoxel-breadcrumbs a {
+    color: rgba(255, 255, 255, 0.8);
+    text-decoration: none;
+    transition: color 0.2s;
+  }
+
+  .nuvoxel-breadcrumbs a:hover {
+    color: white;
+  }
+
+  .nuvoxel-breadcrumbs svg {
+    opacity: 0.5;
+  }
+
+  .nuvoxel-breadcrumbs span {
+    color: white;
   }
 
   .nuvoxel-collection-title {
-    font-size: 36px;
+    font-size: 48px;
     font-weight: 700;
-    color: #111827;
     margin-bottom: 16px;
   }
 
   .nuvoxel-collection-description {
-    color: #6b7280;
+    font-size: 18px;
+    opacity: 0.9;
+    max-width: 600px;
     line-height: 1.6;
-    margin-bottom: 24px;
+  }
+
+  /* Collection Content */
+  .nuvoxel-collection-content {
+    padding: 48px 0 80px;
+    background: #F9FAFB;
   }
 
   .nuvoxel-collection-controls {
     display: flex;
     justify-content: space-between;
     align-items: center;
-    padding: 16px 0;
-    border-top: 1px solid #e5e7eb;
-    border-bottom: 1px solid #e5e7eb;
+    padding: 16px 24px;
+    background: white;
+    border-radius: 12px;
+    margin-bottom: 32px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.04);
   }
 
   .nuvoxel-product-count {
-    color: #6b7280;
+    color: var(--color-muted);
     font-size: 14px;
   }
 
   .nuvoxel-sort-wrapper {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 12px;
   }
 
   .nuvoxel-sort-wrapper label {
     font-size: 14px;
-    color: #6b7280;
+    color: var(--color-muted);
   }
 
   .nuvoxel-sort-select {
-    padding: 8px 12px;
-    border: 1px solid #d1d5db;
-    border-radius: 6px;
+    padding: 10px 16px;
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
     font-size: 14px;
     font-family: 'Amiko', sans-serif;
     background: white;
     cursor: pointer;
+    color: var(--color-primary);
+    transition: border-color 0.2s;
   }
 
+  .nuvoxel-sort-select:focus {
+    outline: none;
+    border-color: var(--color-secondary);
+  }
+
+  /* Products Grid */
   .nuvoxel-products-grid {
     display: grid;
     grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
-    gap: 30px;
-    margin-top: 40px;
+    gap: 24px;
   }
 
   .nuvoxel-product-card {
-    position: relative;
     background: white;
-    border: 1px solid #e5e7eb;
-    border-radius: 8px;
+    border-radius: 12px;
     overflow: hidden;
-    transition: transform 0.2s, box-shadow 0.2s;
+    border: 1px solid var(--color-border);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
   }
 
   .nuvoxel-product-card:hover {
     transform: translateY(-4px);
-    box-shadow: 0 10px 25px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 12px 24px rgba(0, 0, 0, 0.08);
   }
 
   .nuvoxel-product-link {
@@ -196,19 +316,27 @@
 
   .nuvoxel-product-image {
     position: relative;
-    width: 100%;
-    padding-top: 100%;
+    aspect-ratio: 1;
     overflow: hidden;
-    background: #f9fafb;
+    background: #F9FAFB;
   }
 
   .nuvoxel-product-image img {
-    position: absolute;
-    top: 0;
-    left: 0;
     width: 100%;
     height: 100%;
     object-fit: cover;
+    transition: transform 0.3s ease;
+  }
+
+  .nuvoxel-product-card:hover .nuvoxel-product-image img {
+    transform: scale(1.05);
+  }
+
+  .nuvoxel-product-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--color-muted-foreground);
   }
 
   .nuvoxel-badge-sale,
@@ -216,8 +344,8 @@
     position: absolute;
     top: 12px;
     right: 12px;
-    padding: 4px 12px;
-    border-radius: 4px;
+    padding: 6px 12px;
+    border-radius: 6px;
     font-size: 12px;
     font-weight: 600;
     text-transform: uppercase;
@@ -225,23 +353,23 @@
   }
 
   .nuvoxel-badge-sale {
-    background: #10b981;
+    background: var(--color-accent);
     color: white;
   }
 
   .nuvoxel-badge-soldout {
-    background: #6b7280;
+    background: var(--color-muted);
     color: white;
   }
 
   .nuvoxel-product-details {
-    padding: 16px;
+    padding: 20px;
   }
 
   .nuvoxel-product-card .nuvoxel-product-title {
     font-size: 16px;
     font-weight: 600;
-    color: #111827;
+    color: var(--color-primary);
     margin-bottom: 8px;
     line-height: 1.4;
   }
@@ -256,115 +384,160 @@
   .nuvoxel-product-card .nuvoxel-price-current {
     font-size: 18px;
     font-weight: 600;
-    color: #10b981;
+    color: var(--color-secondary);
   }
 
   .nuvoxel-product-card .nuvoxel-price-compare {
     font-size: 14px;
-    color: #6b7280;
+    color: var(--color-muted);
     text-decoration: line-through;
   }
 
   .nuvoxel-product-vendor {
     font-size: 12px;
-    color: #6b7280;
+    color: var(--color-muted);
     margin: 0;
   }
 
   .nuvoxel-quick-add-form {
-    padding: 0 16px 16px;
+    padding: 0 20px 20px;
   }
 
   .nuvoxel-quick-add {
     width: 100%;
-    padding: 10px;
-    background: #059669;
+    padding: 12px;
+    background: var(--color-primary);
     color: white;
     border: none;
-    border-radius: 6px;
+    border-radius: 8px;
     font-size: 14px;
     font-weight: 600;
+    font-family: 'Amiko', sans-serif;
     cursor: pointer;
     transition: background 0.2s;
   }
 
   .nuvoxel-quick-add:hover {
-    background: #047857;
+    background: var(--color-primary-hover);
   }
 
+  /* Empty Collection */
   .nuvoxel-empty-collection {
     grid-column: 1 / -1;
     text-align: center;
-    padding: 60px 20px;
+    padding: 80px 20px;
+    background: white;
+    border-radius: 12px;
+  }
+
+  .nuvoxel-empty-collection svg {
+    color: var(--color-muted-foreground);
+    margin-bottom: 24px;
+  }
+
+  .nuvoxel-empty-collection h3 {
+    font-size: 24px;
+    color: var(--color-primary);
+    margin-bottom: 8px;
   }
 
   .nuvoxel-empty-collection p {
-    font-size: 18px;
-    color: #6b7280;
-    margin-bottom: 20px;
+    font-size: 16px;
+    color: var(--color-muted);
+    margin-bottom: 24px;
   }
 
-  .nuvoxel-browse-all {
-    display: inline-block;
-    padding: 12px 24px;
-    background: #10b981;
-    color: white;
-    text-decoration: none;
-    border-radius: 6px;
-    font-weight: 600;
-    transition: background 0.2s;
-  }
-
-  .nuvoxel-browse-all:hover {
-    background: #059669;
-  }
-
+  /* Pagination */
   .nuvoxel-pagination {
     display: flex;
     justify-content: center;
     align-items: center;
-    gap: 8px;
-    margin-top: 60px;
+    gap: 16px;
+    margin-top: 48px;
+    padding-top: 32px;
+    border-top: 1px solid var(--color-border);
   }
 
-  .nuvoxel-pagination a,
-  .nuvoxel-pagination span {
-    padding: 8px 12px;
-    border: 1px solid #e5e7eb;
-    border-radius: 4px;
+  .nuvoxel-pagination-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    padding: 10px 20px;
+    background: white;
+    color: var(--color-primary);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
     font-size: 14px;
+    font-weight: 600;
     text-decoration: none;
-    color: #6b7280;
     transition: all 0.2s;
   }
 
-  .nuvoxel-pagination a:hover {
-    background: #10b981;
+  .nuvoxel-pagination-btn:hover {
+    background: var(--color-primary);
     color: white;
-    border-color: #10b981;
+    border-color: var(--color-primary);
   }
 
-  .nuvoxel-pagination .active {
-    background: #10b981;
+  .nuvoxel-pagination-numbers {
+    display: flex;
+    gap: 8px;
+  }
+
+  .nuvoxel-pagination-number {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    background: white;
+    color: var(--color-primary);
+    border: 1px solid var(--color-border);
+    border-radius: 8px;
+    font-size: 14px;
+    text-decoration: none;
+    transition: all 0.2s;
+  }
+
+  .nuvoxel-pagination-number:hover,
+  .nuvoxel-pagination-number.active {
+    background: var(--color-primary);
     color: white;
-    border-color: #10b981;
+    border-color: var(--color-primary);
   }
 
   .nuvoxel-pagination-ellipsis {
-    border: none;
-    cursor: default;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    color: var(--color-muted);
   }
 
   @media (max-width: 768px) {
-    .nuvoxel-products-grid {
-      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
-      gap: 16px;
+    .nuvoxel-collection-hero {
+      padding: 48px 0;
+      min-height: 200px;
+    }
+
+    .nuvoxel-collection-title {
+      font-size: 32px;
     }
 
     .nuvoxel-collection-controls {
       flex-direction: column;
       align-items: flex-start;
-      gap: 12px;
+      gap: 16px;
+    }
+
+    .nuvoxel-products-grid {
+      grid-template-columns: repeat(auto-fill, minmax(160px, 1fr));
+      gap: 16px;
+    }
+
+    .nuvoxel-pagination {
+      flex-wrap: wrap;
     }
   }
 </style>
